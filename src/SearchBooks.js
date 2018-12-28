@@ -10,23 +10,24 @@ class SearchBooks extends Component {
         books: []   
     }
     search(value) {
-        BooksAPI.search(value).then(result => {
-            console.log(JSON.stringify(result))
-            
-            if(result.error) {
-                this.setState({books: []})
-            } else
-                this.setState({books: result})
-        })
+        if(!value || value.trim().length < 3) {
+            this.setState({books: []});
+        } else {
+            console.log(value);
+        
+            BooksAPI.search(value).then(result => {
+                console.log(JSON.stringify(result))
+                
+                if(result.error) {
+                    this.setState({books: []})
+                } else
+                    this.setState({books: result})
+            })
+        }
     }
     handleChange = (event) => {
-        const value = event.target.value
-        
-        if(value && value.length > 2) {
-            console.log(value)
-            
-            this.search(value)
-        }
+        const value = event.target.value;
+        this.search(value);
     }
     handleKeyPress = (event) => {
         const value = event.target.value
@@ -53,7 +54,7 @@ class SearchBooks extends Component {
                     <div className="search-books-bar">
                       <Link to='/' className='close-search'>Close</Link>
                       <div className="search-books-input-wrapper">
-                        <input onChange={this.handleChange} onKeyPress={this.handleKeyPress} type="text" placeholder="Search by title or author"/>
+                        <input onChange={this.handleChange} onKeyPress={this.handleKeyPress} type="text" placeholder="Search by title or author. At least three letters."/>
                       </div>
                     </div>
                 </div>
