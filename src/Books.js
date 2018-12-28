@@ -2,7 +2,10 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 
 class Books extends Component {
-    getImageStyle(imageLink) {
+    getImageStyle(book) {
+        let imageLink = book.imageLinks && book.imageLinks.thumbnail ?
+            book.imageLinks.thumbnail : '/img/capa_nao_disponivel.jpg';
+        
         return { 
             width: 128, 
             height: 193, 
@@ -21,7 +24,7 @@ class Books extends Component {
                             <div className="book-top">
                                 <div 
                                     className="book-cover" 
-                                    style={this.getImageStyle(book.imageLinks.thumbnail)}>
+                                    style={this.getImageStyle(book)}>
                                 </div>
                                 <div className="book-shelf-changer">
                                     <select value={shelf} onChange={(e) => action(book, e.target.value)}>
