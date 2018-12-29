@@ -19,11 +19,7 @@ export default class SearchBooks extends Component {
         if (!value || value.trim().length < 3) {
             this.setState({booksResearched: []});
         } else {
-            console.log(value);
-
             BooksAPI.search(value).then(result => {
-                console.log(JSON.stringify(result));
-
                 if (result.error)
                     this.setState({booksResearched: []})
                 else
@@ -39,8 +35,6 @@ export default class SearchBooks extends Component {
         const value = event.target.value
 
         if (event.key === 'Enter') {
-            console.log('enter press here! ')
-
             this.search(value)
         }
     }

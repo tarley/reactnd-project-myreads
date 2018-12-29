@@ -16,8 +16,6 @@ export default class BooksApp extends React.Component {
         });
     }
     updateShelves = (book) => {
-        console.log(book);
-
         this.setState(state => ({
             books: state.books.filter(b => b.id !== book.id).concat([book])
         }))
