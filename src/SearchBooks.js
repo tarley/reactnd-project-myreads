@@ -1,13 +1,21 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import * as BooksAPI from './BooksAPI';
+import PropTypes from 'prop-types'
 import Books from './Books';
+
+import * as BooksAPI from './BooksAPI';
 
 //import 'materialize-css/dist/css/materialize.min.css';
 
-class SearchBooks extends Component {
+export default class SearchBooks extends Component {
     state = {
         books: []
+    }
+    getBookShelf = (searchBook) => {
+        const book = this.props.books.find(book => book.id === searchBook.id);
+        searchBook.shelf = book ? book.shelf : 'none';
+
+        return searchBook;
     }
     search(value) {
         if (!value || value.trim().length < 3) {
@@ -16,12 +24,12 @@ class SearchBooks extends Component {
             console.log(value);
 
             BooksAPI.search(value).then(result => {
-                console.log(JSON.stringify(result))
+                console.log(JSON.stringify(result));
 
-                if (result.error) {
+                if (result.error)
                     this.setState({books: []})
-                } else
-                    this.setState({books: result})
+                else
+                    this.setState({books: result.map(this.getBookShelf)})
             })
         }
     }
@@ -38,16 +46,9 @@ class SearchBooks extends Component {
             this.search(value)
         }
     }
-    add = (book, shelf) => {
-        if (shelf === 'none')
-            return
-        BooksAPI.update(book, 'wantToRead').then((result) => {
-            console.log(JSON.stringify(result))
-
-            this.setState(state => ({books: state.books.filter(b => b.id !== book.id)}))
-        })
-    }
     render() {
+        const {updateShelves} = this.props;
+
         return(
             <div className="search-books">
                 <div className='row'>
@@ -76,12 +77,13 @@ class SearchBooks extends Component {
                 <div className="search-books-results">
                     <Books 
                         books={this.state.books}
-                        shelf='none'
-                        options={[{id: "add", description: "Add"}]}
-                        action={this.add}/>
+                        callback={updateShelves}/>
                 </div>
             </div>);
     }
 }
 
-export default SearchBooks
+SearchBooks.propTypes = {
+    books: PropTypes.array.isRequired,
+    updateShelves: PropTypes.func.isRequired
+}

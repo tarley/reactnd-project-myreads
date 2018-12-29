@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 
-class Books extends Component {
+import * as BooksAPI from './BooksAPI';
+
+export default class Books extends Component {
     getImageStyle(book) {
         let imageLink = book.imageLinks && book.imageLinks.thumbnail ?
             book.imageLinks.thumbnail : '/img/capa_nao_disponivel.jpg';
@@ -12,8 +14,17 @@ class Books extends Component {
             backgroundImage: `url("${imageLink}")`
         }
     }
+    moveTo = (book, shelf, callback) => {
+        book.shelf = shelf
+
+        if(callback)
+            BooksAPI.update(book, shelf)
+                .then((result) => callback(book));
+        else
+            BooksAPI.update(book, shelf);
+    }
     render() {
-        const {books, shelf, options, action} = this.props
+        const {books, callback} = this.props
         
         return (
             <ol className="books-grid">
@@ -27,13 +38,12 @@ class Books extends Component {
                                     style={this.getImageStyle(book)}>
                                 </div>
                                 <div className="book-shelf-changer">
-                                    <select value={shelf} onChange={(e) => action(book, e.target.value)}>
+                                    <select value={book.shelf} onChange={(e) => this.moveTo(book, e.target.value, callback)}>
                                         <option key='move' value="move" disabled>Move to...</option>
                                         { 
-                                            options.map( option => 
+                                            BooksAPI.bookShelves.map( option => 
                                                 <option key={option.id} value={option.id}>{option.description}</option>)
                                         }
-                                        <option key='none' value="none">None</option>
                                     </select>
                                 </div>
                             </div>
@@ -50,10 +60,5 @@ class Books extends Component {
 }
 
 Books.propTypes = {
-    books: PropTypes.array.isRequired, 
-    shelf: PropTypes.string.isRequired, 
-    options: PropTypes.array.isRequired, 
-    action: PropTypes.func.isRequired
+    books: PropTypes.array.isRequired
 }
-
-export default Books
