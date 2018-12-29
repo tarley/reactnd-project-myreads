@@ -22,7 +22,7 @@ export default class BookShelves extends Component {
                               <div className='bookshelf-books'>
                                   <Books 
                                       books={books.filter(book => book.shelf === bookShelf.id)}
-                                      callback={updateShelves}/>
+                                      updateShelves={updateShelves}/>
                               </div>
                             </div>)}
                     </div>

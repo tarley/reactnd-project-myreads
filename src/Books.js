@@ -5,7 +5,7 @@ import * as BooksAPI from './BooksAPI';
 
 export default class Books extends Component {
     getImageStyle(book) {
-        let imageLink = book.imageLinks && book.imageLinks.thumbnail ?
+        const imageLink = book.imageLinks && book.imageLinks.thumbnail ?
             book.imageLinks.thumbnail : '/img/capa_nao_disponivel.jpg';
         
         return { 
@@ -14,17 +14,14 @@ export default class Books extends Component {
             backgroundImage: `url("${imageLink}")`
         }
     }
-    moveTo = (book, shelf, callback) => {
+    moveTo = (book, shelf, updateShelves) => {
         book.shelf = shelf
 
-        if(callback)
-            BooksAPI.update(book, shelf)
-                .then((result) => callback(book));
-        else
-            BooksAPI.update(book, shelf);
+        BooksAPI.update(book, shelf)
+            .then((result) => updateShelves(book));
     }
     render() {
-        const {books, callback} = this.props
+        const {books, updateShelves} = this.props
         
         return (
             <ol className="books-grid">
@@ -38,7 +35,7 @@ export default class Books extends Component {
                                     style={this.getImageStyle(book)}>
                                 </div>
                                 <div className="book-shelf-changer">
-                                    <select value={book.shelf} onChange={(e) => this.moveTo(book, e.target.value, callback)}>
+                                    <select value={book.shelf} onChange={(e) => this.moveTo(book, e.target.value, updateShelves)}>
                                         <option key='move' value="move" disabled>Move to...</option>
                                         { 
                                             BooksAPI.bookShelves.map( option => 
@@ -60,5 +57,6 @@ export default class Books extends Component {
 }
 
 Books.propTypes = {
-    books: PropTypes.array.isRequired
+    books: PropTypes.array.isRequired,
+    updateShelves: PropTypes.func.isRequired
 }

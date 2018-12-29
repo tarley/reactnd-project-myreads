@@ -5,21 +5,19 @@ import Books from './Books';
 
 import * as BooksAPI from './BooksAPI';
 
-//import 'materialize-css/dist/css/materialize.min.css';
-
 export default class SearchBooks extends Component {
     state = {
-        books: []
+        booksResearched: []
     }
-    getBookShelf = (searchBook) => {
-        const book = this.props.books.find(book => book.id === searchBook.id);
-        searchBook.shelf = book ? book.shelf : 'none';
+    getBookShelf = (bookResearched) => {
+        const book = this.props.books.find(book => book.id === bookResearched.id);
+        bookResearched.shelf = book ? book.shelf : 'none';
 
-        return searchBook;
+        return bookResearched;
     }
     search(value) {
         if (!value || value.trim().length < 3) {
-            this.setState({books: []});
+            this.setState({booksResearched: []});
         } else {
             console.log(value);
 
@@ -27,9 +25,9 @@ export default class SearchBooks extends Component {
                 console.log(JSON.stringify(result));
 
                 if (result.error)
-                    this.setState({books: []})
+                    this.setState({booksResearched: []})
                 else
-                    this.setState({books: result.map(this.getBookShelf)})
+                    this.setState({booksResearched: result.map(this.getBookShelf)})
             })
         }
     }
@@ -76,8 +74,8 @@ export default class SearchBooks extends Component {
                 </div>
                 <div className="search-books-results">
                     <Books 
-                        books={this.state.books}
-                        callback={updateShelves}/>
+                        books={this.state.booksResearched}
+                        updateShelves={updateShelves}/>
                 </div>
             </div>);
     }
