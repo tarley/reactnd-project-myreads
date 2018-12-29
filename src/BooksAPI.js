@@ -16,7 +16,7 @@ export const bookShelves = [
     {id: 'currentlyReading', description: 'Currently Reading', isShelf: true}, 
     {id: 'wantToRead', description: 'Want to Read', isShelf: true}, 
     {id: 'read', description: 'Read', isShelf: true},
-    {id: 'none', description: 'None'}
+    {id: 'none', description: 'None', isShelf: false}
 ]
 
 export const get = (bookId) =>
